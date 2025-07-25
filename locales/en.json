@@ -1,0 +1,170 @@
+{
+  "nav": {
+    "home": "Home",
+    "events": "Events",
+    "about": "About Us",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "VanarSena - Committed to Social Service",
+    "subtitle": "Join us and make a difference in society",
+    "cta": {
+      "join": "Join Us",
+      "donate": "Donate",
+      "volunteer": "Volunteer",
+      "events": "Upcoming Events"
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "VanarSena - A non-governmental organization committed to social service",
+    "mission": "Mission",
+    "vision": "Vision",
+    "readMore": "Read More",
+    "story": {
+      "title": "Our Story",
+      "content1": "VanarSena was established in 2020 by a group of people who wanted to bring positive change in society. Our name is inspired by the devoted followers of Lord Hanuman \"VanarSena\", who are symbols of selfless service and dedication.",
+      "content2": "Today we have 25+ active volunteers working in various fields. We have served 500+ people so far and organized 50+ successful programs.",
+      "peopleServed": "People Served",
+      "programs": "Programs"
+    },
+    "purpose": {
+      "title": "Our Purpose",
+      "content": "\"Reaching every section of society and serving those in need is our main objective. We believe that big changes can be brought about through small efforts.\""
+    },
+    "missionVision": {
+      "title": "Mission and Vision",
+      "missionItems": [
+        "Serving the weaker sections of society",
+        "Working in the fields of education and health",
+        "Spreading awareness for environmental conservation",
+        "Connecting youth with social work"
+      ],
+      "visionItems": [
+        "Building a just and equal society",
+        "Access to education and health for all",
+        "Life in harmony with the environment",
+        "Dignified life for all"
+      ]
+    },
+    "workAreas": {
+      "title": "Our Work Areas",
+      "subtitle": "The main areas in which we work",
+      "education": {
+        "title": "Education",
+        "description": "Educational assistance and distribution of school supplies for poor children"
+      },
+      "health": {
+        "title": "Health",
+        "description": "Free health check-up camps and distribution of medicines"
+      },
+      "environment": {
+        "title": "Environment",
+        "description": "Tree plantation, cleanliness campaigns and environmental awareness programs"
+      },
+      "community": {
+        "title": "Community Service",
+        "description": "Festival programs, food distribution and social programs"
+      }
+    },
+    "team": {
+      "title": "Our Team",
+      "subtitle": "The people who drive VanarSena forward",
+      "founder": {
+        "name": "Anish Sharma",
+        "role": "Founder President",
+        "description": "10+ years of experience in social service"
+      },
+      "director": {
+        "name": "Priya Singh",
+        "role": "Program Director",
+        "description": "Expert in education and health sector"
+      },
+      "coordinator": {
+        "name": "Rahul Kumar",
+        "role": "Volunteer Coordinator",
+        "description": "Expert in leading young activists"
+      }
+    },
+    "cta": {
+      "title": "Join Us",
+      "subtitle": "Your contribution strengthens our mission. Join us today and participate in social service.",
+      "volunteer": "Become a Volunteer",
+      "donate": "Donate"
+    }
+  },
+  "events": {
+    "title": "Events",
+    "upcoming": "Upcoming Events",
+    "past": "Past Events",
+    "readMore": "Read More",
+    "noEvents": "No events found",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location",
+    "filter": {
+      "all": "All",
+      "upcoming": "Upcoming",
+      "past": "Past"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Connect with us and contribute to social service",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "phone": "Phone",
+    "address": "Address",
+    "information": "Contact Information",
+    "office": {
+      "address": "VanarSena Office\nSector 62, Noida\nUttar Pradesh - 201309",
+      "hours": "Monday - Friday: 10:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed"
+    },
+    "form": {
+      "title": "Send Message",
+      "fullName": "Your Full Name",
+      "emailPlaceholder": "Your Email",
+      "phoneNumber": "Phone Number",
+      "phonePlaceholder": "Your Phone Number",
+      "subject": "Subject",
+      "selectSubject": "Select Subject",
+      "subjectOptions": {
+        "volunteer": "Want to become a volunteer",
+        "donation": "Want to donate",
+        "partnership": "Partnership proposal",
+        "event": "Event information",
+        "other": "Other"
+      },
+      "messagePlaceholder": "Write your message here...",
+      "volunteerInterest": "I am interested in becoming a volunteer",
+      "sending": "Sending...",
+      "sendMessage": "Send Message",
+      "successMessage": "Your message has been sent successfully. We will contact you soon.",
+      "errorMessage": "There was a problem sending the message. Please try again."
+    },
+    "socialMedia": "Social Media"
+  },
+  "admin": {
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "events": "Event Management",
+    "media": "Media Library",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "upload": "Upload",
+    "language": "Language"
+  }
+}
