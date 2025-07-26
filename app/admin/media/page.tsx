@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import AdminLayout from '../../../components/admin/AdminLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
@@ -22,7 +22,40 @@ export default function MediaManagement() {
   const { language } = useLanguage();
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+
+  // Fetch existing files when component mounts
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  const fetchFiles = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/admin/media');
+      if (response.ok) {
+        const data = await response.json();
+        // Map database fields to MediaFile interface
+        const mappedFiles = data.map((file: any) => ({
+          id: file.id.toString(),
+          filename: file.filename,
+          originalName: file.original_name,
+          fileType: file.file_type,
+          fileSize: file.file_size,
+          url: file.url,
+          uploadedAt: file.uploaded_at,
+        }));
+        setFiles(mappedFiles);
+      } else {
+        console.error('Failed to fetch files');
+      }
+    } catch (error) {
+      console.error('Error fetching files:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setUploading(true);
@@ -41,8 +74,9 @@ export default function MediaManagement() {
         
         if (response.ok) {
           const result = await response.json();
-          setFiles(prev => [result, ...prev]);
           setUploadProgress(prev => ({ ...prev, [file.name]: 100 }));
+          // Refresh the file list after successful upload
+          fetchFiles();
         } else {
           console.error('Upload failed for', file.name);
         }
@@ -78,7 +112,8 @@ export default function MediaManagement() {
       });
 
       if (response.ok) {
-        setFiles(prev => prev.filter(file => file.id !== fileId));
+        // Refresh the file list after successful deletion
+        fetchFiles();
       } else {
         alert(language === 'hi' ? 'फाइल हटाने में त्रुटि' : 'Error deleting file');
       }
@@ -194,7 +229,14 @@ export default function MediaManagement() {
 
           {/* Files Grid */}
           <div className="mt-8">
-            {files.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+                <p className="mt-4 text-gray-500">
+                  {language === 'hi' ? 'फाइलें लोड हो रही हैं...' : 'Loading files...'}
+                </p>
+              </div>
+            ) : files.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-500">
                   {language === 'hi' ? 'कोई फाइल अपलोड नहीं की गई' : 'No files uploaded yet'}
