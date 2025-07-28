@@ -16,18 +16,18 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const filter = searchParams.get('filter') || 'all';
 
-    let query = 'SELECT * FROM media_files ORDER BY uploaded_at DESC';
+    let query = 'SELECT * FROM media_files ORDER BY created_at DESC';
     const params: any[] = [];
 
     if (filter !== 'all') {
       if (filter === 'image') {
-        query = 'SELECT * FROM media_files WHERE file_type LIKE $1 ORDER BY uploaded_at DESC';
+        query = 'SELECT * FROM media_files WHERE mime_type LIKE $1 ORDER BY created_at DESC';
         params.push('image/%');
       } else if (filter === 'video') {
-        query = 'SELECT * FROM media_files WHERE file_type LIKE $1 ORDER BY uploaded_at DESC';
+        query = 'SELECT * FROM media_files WHERE mime_type LIKE $1 ORDER BY created_at DESC';
         params.push('video/%');
       } else if (filter === 'document') {
-        query = 'SELECT * FROM media_files WHERE file_type NOT LIKE $1 AND file_type NOT LIKE $2 ORDER BY uploaded_at DESC';
+        query = 'SELECT * FROM media_files WHERE mime_type NOT LIKE $1 AND mime_type NOT LIKE $2 ORDER BY created_at DESC';
         params.push('image/%', 'video/%');
       }
     }

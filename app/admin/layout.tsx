@@ -25,13 +25,15 @@ export default function AdminRootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
           <LanguageProvider initialLocale="en">
-            {children}
+            <main className="min-h-screen">
+              {children}
+            </main>
           </LanguageProvider>
         </AuthProvider>
       </body>

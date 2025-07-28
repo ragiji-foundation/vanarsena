@@ -69,11 +69,11 @@ export default function Footer() {
                   {t('nav.contact')}
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   {language === 'hi' ? 'दान करें' : 'Donate'}
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 

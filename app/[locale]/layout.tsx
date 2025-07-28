@@ -53,10 +53,18 @@ export default async function LocaleLayout({
   }
 
   return (
-    <LanguageProvider initialLocale={locale as Locale}>
-      <Header />
-      {children}
-      <Footer />
-    </LanguageProvider>
+    <html lang={locale} suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider>
+          <LanguageProvider initialLocale={locale as Locale}>
+            <main className="min-h-screen">
+              <Header />
+              {children}
+              <Footer />
+            </main>
+          </LanguageProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }

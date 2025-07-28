@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { saveContactSubmission } from '../../../lib/db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,31 +23,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Here you would typically:
-    // 1. Save to database
-    // 2. Send email notification
-    // 3. Add to CRM system
-    
-    // For now, we'll just log and return success
-    console.log('Contact form submission:', {
-      name,
-      email,
-      phone,
-      subject,
-      message,
-      volunteerInterest,
-      timestamp: new Date().toISOString()
-    });
+    // Save to database
+    try {
+      const contactId = await saveContactSubmission({
+        name,
+        email,
+        phone,
+        subject,
+        message
+      });
 
-    // Simulate some processing time
-    await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('Contact form submission saved with ID:', contactId);
 
-    return NextResponse.json(
-      { 
-        message: 'आपका संदेश सफलतापूर्वक भेज दिया गया है। हम जल्द ही आपसे संपर्क करेंगे।' 
-      },
-      { status: 200 }
-    );
+      return NextResponse.json(
+        { 
+          message: 'आपका संदेश सफलतापूर्वक भेज दिया गया है। हम जल्द ही आपसे संपर्क करेंगे।',
+          id: contactId
+        },
+        { status: 200 }
+      );
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      // Log to console but still return success to user (fallback behavior)
+      console.log('Contact form submission (DB failed):', {
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        volunteerInterest,
+        timestamp: new Date().toISOString()
+      });
+
+      return NextResponse.json(
+        { 
+          message: 'आपका संदेश सफलतापूर्वक भेज दिया गया है। हम जल्द ही आपसे संपर्क करेंगे।' 
+        },
+        { status: 200 }
+      );
+    }
 
   } catch (error) {
     console.error('Contact form error:', error);

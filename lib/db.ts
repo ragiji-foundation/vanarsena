@@ -118,6 +118,7 @@ export async function getEvents(locale: 'hi' | 'en' = 'hi', limit?: number) {
       e.video_urls,
       e.document_urls,
       e.visibility,
+      e.featured_image,
       e.created_at,
       et.title,
       et.description,
@@ -147,6 +148,7 @@ export async function getEventBySlug(slug: string, locale: 'hi' | 'en' = 'hi') {
       e.video_urls,
       e.document_urls,
       e.visibility,
+      e.featured_image,
       e.created_at,
       et.title,
       et.description,
@@ -267,4 +269,53 @@ export async function saveContactSubmission(contactData: any) {
   ]);
   
   return result.rows[0].id;
+}
+
+// Get all contact submissions
+export async function getContactSubmissions() {
+  const query = `
+    SELECT id, name, email, phone, subject, message, status, submitted_at
+    FROM contact_submissions
+    ORDER BY submitted_at DESC
+  `;
+  
+  const result = await pool.query(query);
+  return result.rows;
+}
+
+// Get contact submission by ID
+export async function getContactSubmissionById(id: number) {
+  const query = `
+    SELECT id, name, email, phone, subject, message, status, submitted_at
+    FROM contact_submissions
+    WHERE id = $1
+  `;
+  
+  const result = await pool.query(query, [id]);
+  return result.rows[0];
+}
+
+// Update contact submission status
+export async function updateContactSubmissionStatus(id: number, status: string) {
+  const query = `
+    UPDATE contact_submissions
+    SET status = $1
+    WHERE id = $2
+    RETURNING id
+  `;
+  
+  const result = await pool.query(query, [status, id]);
+  return result.rows[0];
+}
+
+// Delete contact submission
+export async function deleteContactSubmission(id: number) {
+  const query = `
+    DELETE FROM contact_submissions
+    WHERE id = $1
+    RETURNING id
+  `;
+  
+  const result = await pool.query(query, [id]);
+  return result.rows[0];
 }

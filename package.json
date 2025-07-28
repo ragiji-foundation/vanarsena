@@ -10,7 +10,8 @@
     "lint": "next lint",
     "setup-db": "tsx scripts/setup-db.ts",
     "setup-admin": "node scripts/setup-admin.js",
-    "setup-database": "node scripts/setup-database.js"
+    "setup-database": "node scripts/setup-database.js",
+    "seed-data": "node scripts/seed-data.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",

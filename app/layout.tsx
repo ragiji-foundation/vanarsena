@@ -26,17 +26,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="hi">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <AuthProvider>
-          <main className="min-h-screen">
-            {children}
-          </main>
-        </AuthProvider>
-      </body>
-    </html>
-  );
+  return children;
 }

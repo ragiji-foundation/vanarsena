@@ -25,6 +25,8 @@ export default function AdminDashboard() {
     contactSubmissions: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [seeding, setSeeding] = useState(false);
+  const [seedingMessage, setSeedingMessage] = useState('');
 
   useEffect(() => {
     fetchDashboardStats();
@@ -41,6 +43,47 @@ export default function AdminDashboard() {
       console.error('Error fetching dashboard stats:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSeedData = async () => {
+    if (!confirm(language === 'hi' 
+      ? 'क्या आप वाकई डेटाबेस में नमूना डेटा जोड़ना चाहते हैं? यह कुछ नमूना कार्यक्रम, संपर्क संदेश और मीडिया फाइलें जोड़ेगा।'
+      : 'Are you sure you want to seed the database with sample data? This will add some sample events, contact messages, and media files.')) {
+      return;
+    }
+
+    setSeeding(true);
+    setSeedingMessage(language === 'hi' ? 'डेटा जोड़ा जा रहा है...' : 'Seeding data...');
+
+    try {
+      const response = await fetch('/api/admin/seed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setSeedingMessage(
+          language === 'hi' 
+            ? 'डेटाबेस सफलतापूर्वक सीड किया गया!'
+            : 'Database seeded successfully!'
+        );
+        // Refresh stats
+        fetchDashboardStats();
+        setTimeout(() => setSeedingMessage(''), 5000);
+      } else {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to seed data');
+      }
+    } catch (error) {
+      console.error('Error seeding data:', error);
+      setSeedingMessage(language === 'hi' ? 'डेटा जोड़ने में त्रुटि' : 'Error seeding data');
+      setTimeout(() => setSeedingMessage(''), 5000);
+    } finally {
+      setSeeding(false);
     }
   };
 
@@ -143,9 +186,40 @@ export default function AdminDashboard() {
 
               {/* Quick Actions */}
               <div className="mt-8">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">
-                  {language === 'hi' ? 'त्वरित कार्य' : 'Quick Actions'}
-                </h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-medium text-gray-900">
+                    {language === 'hi' ? 'त्वरित कार्य' : 'Quick Actions'}
+                  </h2>
+                  
+                  {/* Seed Data Button */}
+                  <button
+                    onClick={handleSeedData}
+                    disabled={seeding}
+                    className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center space-x-2"
+                  >
+                    {seeding ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <span>{language === 'hi' ? 'जोड़ा जा रहा है...' : 'Seeding...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4-8-4m16 0v10l-8 4-8-4V7" />
+                        </svg>
+                        <span>{language === 'hi' ? 'नमूना डेटा जोड़ें' : 'Seed Sample Data'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                
+                {/* Seed Status Message */}
+                {seedingMessage && (
+                  <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
+                    {seedingMessage}
+                  </div>
+                )}
+                
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <a
                     href="/admin/events/new"

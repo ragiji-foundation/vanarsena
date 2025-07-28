@@ -165,30 +165,106 @@ export default async function EventsPage({ params, searchParams }: PageProps) {
               </div>
             </div>
 
-            {/* Upcoming Events */}
-            {upcomingEvents.length > 0 && (
+            {/* Featured/Latest Event */}
+            {(upcomingEvents.length > 0 || pastEvents.length > 0) && (
               <section className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  {locale === 'hi' ? 'आगामी कार्यक्रम' : 'Upcoming Events'}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {upcomingEvents.map((event) => (
-                    <EventCard key={event.id} event={event} locale={locale} isUpcoming={true} />
-                  ))}
-                </div>
+                {(() => {
+                  const featuredEvent = upcomingEvents[0] || pastEvents[0];
+                  const isUpcoming = upcomingEvents.length > 0;
+                  
+                  return (
+                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                      <div className="lg:flex">
+                        {featuredEvent.featured_image && (
+                          <div className="lg:w-1/2">
+                            <img
+                              src={featuredEvent.featured_image}
+                              alt={featuredEvent.title}
+                              className="w-full h-64 lg:h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className={`${featuredEvent.featured_image ? 'lg:w-1/2' : 'w-full'} p-8 lg:p-12`}>
+                          <div className="flex items-center mb-4">
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              isUpcoming
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {isUpcoming 
+                                ? (locale === 'hi' ? 'आगामी कार्यक्रम' : 'Upcoming Event')
+                                : (locale === 'hi' ? 'नवीनतम कार्यक्रम' : 'Latest Event')
+                              }
+                            </span>
+                          </div>
+                          
+                          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <Link 
+                              href={`/${locale}/events/${featuredEvent.slug}`}
+                              className="hover:text-orange-600 transition-colors"
+                            >
+                              {featuredEvent.title}
+                            </Link>
+                          </h2>
+                          
+                          {featuredEvent.description && (
+                            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                              {featuredEvent.description.replace(/<[^>]*>/g, '').substring(0, 200)}...
+                            </p>
+                          )}
+                          
+                          <div className="flex flex-wrap gap-4 mb-6 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                              {new Date(featuredEvent.event_date).toLocaleDateString(locale === 'hi' ? 'hi-IN' : 'en-IN', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </div>
+                            
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              {featuredEvent.location}
+                            </div>
+                          </div>
+                          
+                          <Link
+                            href={`/${locale}/events/${featuredEvent.slug}`}
+                            className="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+                          >
+                            {locale === 'hi' ? 'पूरा पढ़ें' : 'Read More'}
+                            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </section>
             )}
 
-            {/* Past Events */}
-            {pastEvents.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  {locale === 'hi' ? 'पूर्व कार्यक्रम' : 'Past Events'}
+            {/* Blog-style Event List */}
+            {filteredEvents.length > 1 && (
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">
+                  {locale === 'hi' ? 'सभी कार्यक्रम' : 'All Events'}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {pastEvents.map((event) => (
-                    <EventCard key={event.id} event={event} locale={locale} isUpcoming={false} />
-                  ))}
+                
+                <div className="space-y-8">
+                  {filteredEvents.slice(1).map((event) => {
+                    const isUpcoming = new Date(event.event_date) >= new Date();
+                    return (
+                      <EventBlogCard key={event.id} event={event} locale={locale} isUpcoming={isUpcoming} />
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -368,6 +444,122 @@ function EventCard({ event, locale, isUpcoming }: {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link>
+      </div>
+    </article>
+  );
+}
+
+// Blog-style Event Card Component
+function EventBlogCard({ event, locale, isUpcoming }: { 
+  event: any; 
+  locale: string; 
+  isUpcoming: boolean; 
+}) {
+  const formattedDate = new Date(event.event_date).toLocaleDateString(locale === 'hi' ? 'hi-IN' : 'en-IN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const formattedTime = event.event_time ? 
+    new Date(`2000-01-01T${event.event_time}`).toLocaleTimeString(locale === 'hi' ? 'hi-IN' : 'en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }) : null;
+
+  return (
+    <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+      <div className="md:flex">
+        {event.featured_image && (
+          <div className="md:w-1/3">
+            <Link href={`/${locale}/events/${event.slug}`}>
+              <img
+                src={event.featured_image}
+                alt={event.title}
+                className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </Link>
+          </div>
+        )}
+        
+        <div className={`${event.featured_image ? 'md:w-2/3' : 'w-full'} p-6 md:p-8`}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <div className="flex items-center">
+                <svg className="w-4 h-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {formattedDate}
+              </div>
+              
+              <div className="flex items-center">
+                <svg className="w-4 h-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {event.location}
+              </div>
+            </div>
+            
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+              isUpcoming
+                ? 'bg-green-100 text-green-800'
+                : 'bg-gray-100 text-gray-800'
+            }`}>
+              {isUpcoming 
+                ? (locale === 'hi' ? 'आगामी' : 'Upcoming')
+                : (locale === 'hi' ? 'संपन्न' : 'Past')
+              }
+            </span>
+          </div>
+
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight">
+            <Link 
+              href={`/${locale}/events/${event.slug}`}
+              className="hover:text-orange-600 transition-colors"
+            >
+              {event.title}
+            </Link>
+          </h3>
+
+          {event.description && (
+            <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
+              {event.description.replace(/<[^>]*>/g, '').substring(0, 180)}...
+            </p>
+          )}
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {event.tags && event.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {event.tags.slice(0, 2).map((tag: string, index: number) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                  {event.tags.length > 2 && (
+                    <span className="text-xs text-gray-500">
+                      +{event.tags.length - 2}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <Link
+              href={`/${locale}/events/${event.slug}`}
+              className="inline-flex items-center text-orange-600 hover:text-orange-700 font-semibold text-sm group-hover:translate-x-1 transition-all"
+            >
+              {locale === 'hi' ? 'पढ़ें' : 'Read More'}
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+        </div>
       </div>
     </article>
   );
